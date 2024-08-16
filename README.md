@@ -39,4 +39,4 @@ This project is under the MIT License
 
 
 ## Conclusion
-Enjoy simpler payment methods with our UPI ID generator for credit card bills. 
+Enjoy simpler payment methods with our UPI ID generator for credit card bills.
