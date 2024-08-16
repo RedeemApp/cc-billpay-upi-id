@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credit Card Bill Pay UPI ID Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        input, button {
+            margin: 10px 0;
+            padding: 5px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .upi-id, .legend-item {
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .copy-btn {
+            padding: 5px 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            width: 70px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        .copy-btn:hover {
+            background-color: #45a049;
+        }
+        .copy-btn.copied {
+            background-color: #2196F3;
+            animation: pulse 0.5s;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        .legend {
+            margin-top: 30px;
+            border-top: 1px solid #ccc;
+            padding-top: 20px;
+        }
+        /* Bank-specific styles (muted versions of brand colors) */
+        .axis { background-color: #f0e6e6; }
+        .icici { background-color: #e6f0e6; }
+        .au-bank { background-color: #e6e6f0; }
+        .idfc { background-color: #f0f0e6; }
+        .sbi { background-color: #e6f0f0; }
+        .amex { background-color: #e6e6e6; }
+    </style>
+</head>
+<body>
+    <h1>Credit Card Bill Pay UPI ID Generator</h1>
+    <input type="text" id="mobileNumber" placeholder="Enter 10-digit mobile number" maxlength="10">
+    <input type="text" id="creditCardNumber" name="creditCardNumber" placeholder="Enter 15 or 16-digit credit card number" maxlength="19" autocomplete="cc-number">
+    <button onclick="generateUPIIDs()">Generate UPI IDs</button>
+
+    <div id="upiIDs"></div>
+
+    <div class="legend">
+        <h2>UPI ID Formats</h2>
+        <div class="legend-item axis">
+            <strong>Axis:</strong> CC.91[10 digit mobile number][last 4 digits of card]@axisbank
+        </div>
+        <div class="legend-item icici">
+            <strong>ICICI:</strong> ccpay.[16 digit card number]@icici
+        </div>
+        <div class="legend-item au-bank">
+            <strong>AU Bank:</strong> AUCC[10 digit mobile number][last 4 digits of card]@AUBANK
+        </div>
+        <div class="legend-item idfc">
+            <strong>IDFC:</strong> [16 digit card number].cc@idfcbank
+        </div>
+        <div class="legend-item sbi">
+            <strong>SBI:</strong> Sbicard.[16 digit card number]@SBI
+        </div>
+        <div class="legend-item amex">
+            <strong>AMEX:</strong> AEBC[15 digit card number]@SC
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('creditCardNumber').addEventListener('input', function (e) {
+            let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+            let formattedValue = '';
+            for (let i = 0; i < value.length; i++) {
+                if (i > 0 && i % 4 === 0) {
+                    formattedValue += ' ';
+                }
+                formattedValue += value[i];
+            }
+            e.target.value = formattedValue;
+        });
+
+        function generateUPIIDs() {
+            const mobileNumber = document.getElementById('mobileNumber').value;
+            const creditCard = document.getElementById('creditCardNumber').value.replace(/\s+/g, '');
+
+            if (mobileNumber.length !== 10 || (creditCard.length !== 16 && creditCard.length !== 15)) {
+                alert('Please enter a valid 10-digit mobile number and 15 or 16-digit credit card number.');
+                return;
+            }
+
+            const last4Digits = creditCard.slice(-4);
+            const upiIDs = {
+                'Axis': `CC.91${mobileNumber}${last4Digits}@axisbank`,
+                'ICICI': `ccpay.${creditCard}@icici`,
+                'AU Bank': `AUCC${mobileNumber}${last4Digits}@AUBANK`,
+                'IDFC': `${creditCard}.cc@idfcbank`,
+                'SBI': `Sbicard.${creditCard}@SBI`,
+                'AMEX': creditCard.length === 15 ? `AEBC${creditCard}@SC` : 'Not applicable for 16-digit cards'
+            };
+
+            const upiIDsContainer = document.getElementById('upiIDs');
+            upiIDsContainer.innerHTML = '';
+
+            for (const [bank, upiID] of Object.entries(upiIDs)) {
+                const upiIDElement = document.createElement('div');
+                upiIDElement.className = `upi-id ${bank.toLowerCase().replace(' ', '-')}`;
+                upiIDElement.innerHTML = `
+                    <span><strong>${bank}:</strong> ${upiID}</span>
+                    <button class="copy-btn" onclick="copyToClipboard(this, '${upiID}')" ${upiID.includes('Not applicable') ? 'disabled' : ''}>Copy</button>
+                `;
+                upiIDsContainer.appendChild(upiIDElement);
+            }
+        }
+
+        function copyToClipboard(button, text) {
+            navigator.clipboard.writeText(text).then(() => {
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                    button.classList.remove('copied');
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+            });
+        }
+    </script>
+</body>
+</html>
