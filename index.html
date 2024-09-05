@@ -132,7 +132,13 @@ a {
     text-decoration: none;
 }
 
-
+.strikethrough {
+    text-decoration: line-through;
+}
+button[disabled] {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
 
     </style>
 </head>
@@ -158,12 +164,13 @@ a {
         <div class="legend-item idfc">
             <strong>IDFC:</strong> [16 digit card number].cc@idfcbank
         </div>
-        <div class="legend-item sbi">
-            <strong>SBI:</strong> Sbicard.[16 digit card number]@SBI
-        </div>
         <div class="legend-item amex">
             <strong>AMEX:</strong> AEBC[15 digit card number]@SC
         </div>
+        <div class="legend-item sbi">
+            <strong>SBI:</strong> <s>Sbicard.[16 digit card number]@SBI</s> (Not working for me)
+        </div>
+
     </div>
 
     <script>
@@ -194,8 +201,9 @@ a {
                 'ICICI': `ccpay.${creditCard}@icici`,
                 'AU Bank': `AUCC${mobileNumber}${last4Digits}@AUBANK`,
                 'IDFC': `${creditCard}.cc@idfcbank`,
+                'AMEX': creditCard.length === 15 ? `AEBC${creditCard}@SC` : 'Not applicable for 16-digit cards',
                 'SBI': `Sbicard.${creditCard}@SBI`,
-                'AMEX': creditCard.length === 15 ? `AEBC${creditCard}@SC` : 'Not applicable for 16-digit cards'
+
             };
 
             const upiIDsContainer = document.getElementById('upiIDs');
@@ -204,18 +212,26 @@ a {
             for (const [bank, upiID] of Object.entries(upiIDs)) {
                 const upiIDElement = document.createElement('div');
                 upiIDElement.className = `upi-id ${bank.toLowerCase().replace(' ', '-')}`;
+
+                let strikethrough = '';
+                let buttonDisabled = '';
+                if (bank === 'SBI') {
+                    strikethrough = 'strikethrough';
+                    buttonDisabled = 'disabled';
+                }
+                console.log(bank);
                 upiIDElement.innerHTML = `
-                    <span><strong>${bank}:</strong> ${upiID}</span>
-                    <button class="copy-btn" onclick="copyToClipboard(this, '${upiID}')" ${upiID.includes('Not applicable') ? 'disabled' : ''}>Copy</button>
+                    <span class="${strikethrough}"><strong>${bank}:</strong> ${upiID}</span>
+                    <button class="copy-btn" ${buttonDisabled} onclick="copyToClipboard(this, '${upiID}')" ${upiID.includes('Not applicable') ? 'disabled' : ''}>Copy</button>
                         <a href="upi://pay?pa=${upiID}&pn=${bank}&cu=INR">
-    <button class="pay-btn">
-        Pay
-<div class="all-logos">
+                    <button class="pay-btn" ${buttonDisabled} ${upiID.includes('Not applicable') ? 'disabled' : ''}>
+                        Pay
+        <div class="all-logos">
                             <img src="gpay.svg" class="logo gpay" alt="GPay">
 
-</div>
+        </div>
                     </button>
-</a>
+        </a>
 
                 `;
                 upiIDsContainer.appendChild(upiIDElement);
