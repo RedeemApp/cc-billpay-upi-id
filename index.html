@@ -36,6 +36,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            font-size: 12px;
         }
         .copy-btn {
             padding: 5px 10px;
@@ -85,6 +86,54 @@
         .idfc { background-color: #f0f0e6; }
         .sbi { background-color: #e6f0f0; }
         .amex { background-color: #e6e6e6; }
+
+.pay-btn {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    text-align: center;
+    text-decoration: none;
+}
+
+.all-logos{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    margin-left: 4px;
+}
+
+.logo {
+    position: relative;
+    border-radius: 50%;
+    height: 18px;
+    width: 18px;
+}
+
+.logo:first-child {
+    left: 0;
+}
+
+.logo:nth-child(2) {
+    left: -8px;
+}
+
+.logo:nth-child(3) {
+    left: -16px;
+}
+
+a {
+    text-decoration: none;
+}
+
+
+
     </style>
 </head>
 <body>
@@ -158,11 +207,22 @@
                 upiIDElement.innerHTML = `
                     <span><strong>${bank}:</strong> ${upiID}</span>
                     <button class="copy-btn" onclick="copyToClipboard(this, '${upiID}')" ${upiID.includes('Not applicable') ? 'disabled' : ''}>Copy</button>
+                        <a href="upi://pay?pa=${upiID}&pn=${bank}&cu=INR">
+    <button class="pay-btn">
+        Pay
+<div class="all-logos">
+                            <img src="gpay.svg" class="logo gpay" alt="GPay">
+
+</div>
+                    </button>
+</a>
+
                 `;
                 upiIDsContainer.appendChild(upiIDElement);
             }
         }
-
+        // <img src="bhim.png" class="logo bhim" alt="BHIM">
+        // <img src="phonepe.png" class="logo phonepe" alt="PhonePe">
         function copyToClipboard(button, text) {
             navigator.clipboard.writeText(text).then(() => {
                 button.textContent = 'Copied!';
