@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Credit Card Bill Pay UPI ID Generator</title>
+    <title>Pay Your Credit Card Bills via UPI. Generate UPI ID.</title>
     <style>
         .disclaimer {
-    margin-top: 30px;
-    font-size: 0.85em;
-    text-align: justify;
-    background-color: #f2d6d6;
-    border: 1px solid #ea7777;
-    border-radius: 5px;
-    padding: 10px;
-    color: #800000;
-}
+            margin-top: 30px;
+            font-size: 0.85em;
+            text-align: justify;
+            background-color: #f2d6d6;
+            border: 1px solid #ea7777;
+            border-radius: 5px;
+            padding: 10px;
+            color: #800000;
+        }
 
         body {
             font-family: Arial, sans-serif;
@@ -87,58 +87,58 @@
         .sbi { background-color: #e6f0f0; }
         .amex { background-color: #e6e6e6; }
 
-.pay-btn {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    background-color: #4CAF50;
-    color: white;
-    cursor: pointer;
-    border: none;
-    border-radius: 5px;
-    text-align: center;
-    text-decoration: none;
-}
+        .pay-btn {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            text-align: center;
+            text-decoration: none;
+        }
 
-.all-logos{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    margin-left: 4px;
-}
+        .all-logos{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            margin-left: 4px;
+        }
 
-.logo {
-    position: relative;
-    border-radius: 50%;
-    height: 18px;
-    width: 18px;
-}
+        .logo {
+            position: relative;
+            border-radius: 50%;
+            height: 18px;
+            width: 18px;
+        }
 
-.logo:first-child {
-    left: 0;
-}
+        .logo:first-child {
+            left: 0;
+        }
 
-.logo:nth-child(2) {
-    left: -8px;
-}
+        .logo:nth-child(2) {
+            left: -8px;
+        }
 
-.logo:nth-child(3) {
-    left: -16px;
-}
+        .logo:nth-child(3) {
+            left: -16px;
+        }
 
-a {
-    text-decoration: none;
-}
+        a {
+            text-decoration: none;
+        }
 
-.strikethrough {
-    text-decoration: line-through;
-}
-button[disabled] {
-    background-color: #cccccc;
-    cursor: not-allowed;
-}
+        .strikethrough {
+            text-decoration: line-through;
+        }
+        button[disabled] {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
 
     </style>
 </head>
@@ -223,16 +223,14 @@ button[disabled] {
                 upiIDElement.innerHTML = `
                     <span class="${strikethrough}"><strong>${bank}:</strong> ${upiID}</span>
                     <button class="copy-btn" ${buttonDisabled} onclick="copyToClipboard(this, '${upiID}')" ${upiID.includes('Not applicable') ? 'disabled' : ''}>Copy</button>
-                        <a href="upi://pay?pa=${upiID}&pn=${bank}&cu=INR">
-                    <button class="pay-btn" ${buttonDisabled} ${upiID.includes('Not applicable') ? 'disabled' : ''}>
-                        Pay
-        <div class="all-logos">
-                            <img src="gpay.svg" class="logo gpay" alt="GPay">
-
-        </div>
-                    </button>
-        </a>
-
+                    <a href="upi://pay?pa=${upiID}&pn=${bank}&cu=INR">
+                        <button class="pay-btn" ${buttonDisabled} ${upiID.includes('Not applicable') ? 'disabled' : ''}>
+                            Pay
+                            <div class="all-logos">
+                                <img src="gpay.svg" class="logo gpay" alt="GPay">
+                            </div>
+                        </button>
+                    </a>
                 `;
                 upiIDsContainer.appendChild(upiIDElement);
             }
