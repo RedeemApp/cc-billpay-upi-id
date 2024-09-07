@@ -190,9 +190,8 @@
             const mobileNumber = document.getElementById('mobileNumber').value;
             const creditCard = document.getElementById('creditCardNumber').value.replace(/\s+/g, '');
 
-            if (mobileNumber.length !== 10 || (creditCard.length !== 16 && creditCard.length !== 15)) {
-                alert('Please enter a valid 10-digit mobile number and 15 or 16-digit credit card number.');
-                return;
+            if(!validate(mobileNumber, creditCard)){
+                    return;
             }
 
             const last4Digits = creditCard.slice(-4);
@@ -248,6 +247,28 @@
             }).catch(err => {
                 console.error('Failed to copy: ', err);
             });
+        }
+
+        function validate(mobileNumber, creditCard) {
+            if (mobileNumber.length !== 10 || (creditCard.length !== 16 && creditCard.length !== 15) ||!validateCardNumber(creditCard)) {
+                alert('Please enter a valid 10-digit mobile number and 15 or 16-digit credit card number.');
+                return false;
+            }
+            return true;
+        }
+        function validateCardNumber(cardNumber){
+            const cardNumberStr = cardNumber + "";
+            var sum =0;
+            for(i=cardNumber.length-1; i>=0; i-=2){
+                sum += getDoubledSum(cardNumberStr[i])
+            }
+            return sum%10 == 0;
+        }
+
+        function getDoubledSum(num){
+            var n = parseInt(num);
+            n*=2;
+            return (n%10) + Math.floor(n/10);
         }
     </script>
 <div class="disclaimer">
