@@ -1,5 +1,8 @@
 # UPI ID Generator for Credit Card Bills
 
+## Access the Live Tool
+It is hosted on GitHub Pages [here](https://redeemapp.github.io/cc-billpay-upi-id/).
+
 ## Overview
 Did you know you can pay credit card bills via UPI id?
 
