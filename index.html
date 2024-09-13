@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pay Your Credit Card Bills via UPI. Generate UPI ID.</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         .disclaimer {
             margin-top: 30px;
@@ -140,13 +141,78 @@
             cursor: not-allowed;
         }
 
+        #overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            justify-content: center;
+            align-items: center;
+        }
+
+        #overlayContent {
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        #largeQrcode {
+            margin-bottom: 20px;
+        }
+
+        #largeQrcode img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+        }
+
+        #bankInfo {
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        #closeOverlay {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        #closeOverlay:hover {
+            background-color: #0056b3;
+        }
+
+        @media only screen and (min-width: 1024px) {
+            .smallQrcode {
+                display: block; 
+            }
+        }
+
+        @media only screen and (max-width: 1023px) {
+            .smallQrcode {
+                display: none; 
+            }
+        }
+
     </style>
 </head>
 <body>
     <h1>Pay Your Credit Card Bills via UPI. Generate UPI ID.</h1>
     <input type="number" id="mobileNumber" placeholder="Enter 10-digit mobile number" maxlength="10">
     <input type="text" id="creditCardNumber" name="creditCardNumber" placeholder="Enter 15 or 16-digit credit card number" maxlength="19" autocomplete="cc-number" inputmode="numeric">
-    <button onclick="generateUPIIDs()">Generate UPI IDs</button>
+	<button onclick="generateUPIIDs()">Generate UPI IDs</button>
 
     <div id="upiIDs"></div>
 
@@ -173,6 +239,14 @@
 
     </div>
 
+    <div id="overlay">
+        <div id="overlayContent">
+            <div id="largeQrcode"></div>
+            <div id="bankInfo"></div>
+            <button id="closeOverlay">Close</button>
+        </div>
+    </div>
+
     <script>
         document.getElementById('creditCardNumber').addEventListener('input', function (e) {
             let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
@@ -185,6 +259,10 @@
             }
             e.target.value = formattedValue;
         });
+
+        const closeOverlay = document.getElementById('closeOverlay');
+        closeOverlay.addEventListener('click', hideOverlay);
+        let largeQrcode = null;
 
         function generateUPIIDs() {
             const mobileNumber = document.getElementById('mobileNumber').value;
@@ -219,11 +297,13 @@
                     strikethrough = 'strikethrough';
                     buttonDisabled = 'disabled';
                 }
-                console.log(bank);
+				
+				let upiString = `upi://pay?pa=${encodeURIComponent(upiID)}&pn=${encodeURIComponent(bank)}&cu=INR`;
+								
                 upiIDElement.innerHTML = `
                     <span class="${strikethrough}"><strong>${bank}:</strong> ${upiID}</span>
                     <button class="copy-btn" ${buttonDisabled} onclick="copyToClipboard(this, '${upiID}')" ${upiID.includes('Not applicable') ? 'disabled' : ''}>Copy</button>
-                    <a href="upi://pay?pa=${upiID}&pn=${bank}&cu=INR">
+                    <a href="${upiString}">
                         <button class="pay-btn" ${buttonDisabled} ${upiID.includes('Not applicable') ? 'disabled' : ''}>
                             Pay
                             <div class="all-logos">
@@ -231,7 +311,20 @@
                             </div>
                         </button>
                     </a>
+                    <span class="smallQrcode ${bank} qrcode-container"></span>
                 `;
+                
+                if (!upiID.includes('Not applicable') && bank !== 'SBI') {
+                    var qrcodeContainer = upiIDElement.querySelector('.qrcode-container');
+                    new QRCode(qrcodeContainer, {
+                        text: upiString,
+                        width: 50,
+                        height: 50
+                    });
+                    qrcodeContainer.onclick = function() {
+                        showOverlay(upiString, bank, upiID);
+                    };
+                }
                 upiIDsContainer.appendChild(upiIDElement);
             }
         }
@@ -249,6 +342,27 @@
                 console.error('Failed to copy: ', err);
             });
         }
+
+        function showOverlay(upiString, bank, upiID) {
+            var largeQrcodeDiv = document.getElementById('largeQrcode');
+            if (largeQrcode) {
+                    largeQrcode.clear();
+                    largeQrcode.makeCode(upiString);
+                } else {
+                    largeQrcode = new QRCode(largeQrcodeDiv, {
+                        text: upiString,
+                        width: 300,
+                        height: 300,
+                    });
+                }
+            bankInfo.textContent = `${bank} / ${upiID}`;        
+            overlay.style.display = 'flex';
+        }
+
+        function hideOverlay() {
+            overlay.style.display = 'none';
+        }
+
     </script>
 <div class="disclaimer">
     <p>Please note that these UPI IDs are generated with best effort and should be checked for accuracy before making any payment. We will not be held responsible for any losses incurred due to incorrect UPI IDs generated by this tool.</p>
