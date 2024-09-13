@@ -193,7 +193,9 @@
         #closeOverlay:hover {
             background-color: #0056b3;
         }
-
+        .font-gray {
+            color: gray;
+        }
         @media only screen and (min-width: 1024px) {
             .smallQrcode {
                 display: block; 
@@ -210,6 +212,7 @@
 </head>
 <body>
     <h1>Pay Your Credit Card Bills via UPI. Generate UPI ID.</h1>
+    <h4 class="font-gray">An open-source and secure alternative to mainstream credit card balance payment apps.</h4>
     <input type="number" id="mobileNumber" placeholder="Enter 10-digit mobile number" maxlength="10">
     <input type="text" id="creditCardNumber" name="creditCardNumber" placeholder="Enter 15 or 16-digit credit card number" maxlength="19" autocomplete="cc-number" inputmode="numeric">
 	<button onclick="generateUPIIDs()">Generate UPI IDs</button>
