@@ -34,7 +34,12 @@ You can use the tool to generate the upi id.
 
 ## Contribution
 
-Data compiled from various sources / blogs.
+To contribute to this project, please familiarize yourself with the payment procedures for various banks:
+- [American Express (Amex)](https://www.americanexpress.com/in/customer-service/payments-statements-and-balance/making-a-payment.html)
+- [ICICI Bank](https://www.icicibank.com/blogs/credit-card/credit-card-payment-procedure)
+- [Axis Bank](https://www.axisbank.com/progress-with-us/digital-banking/how-to-pay-your-loan-emi-and-credit-card-dues-using-upi)
+- [IDFC Bank](https://www.idfcfirstbank.com/finfirst-blogs/credit-card/ways-to-make-credit-card-bill-payment)
+- [AU Bank](https://www.aubank.in/commercial-credit-cards-bill-payment)
 
 ## License
 
