@@ -21,7 +21,7 @@ You can use the tool to generate the upi id.
 * Source code is publicly available on GitHub.
 
 ## Demo
-![Demo Image](demo-upi-id-generator-for-cc-bill.png)
+![Demo Image](qr-demo.png)
 
 ## Installation
 
@@ -34,7 +34,7 @@ You can use the tool to generate the upi id.
 
 ## Contribution
 
-To contribute to this project, please familiarize yourself with the payment procedures for various banks:
+To contribute to this project, please familiarize yourself with the upi id formats for various banks:
 - [American Express (Amex)](https://www.americanexpress.com/in/customer-service/payments-statements-and-balance/making-a-payment.html)
 - [ICICI Bank](https://www.icicibank.com/blogs/credit-card/credit-card-payment-procedure)
 - [Axis Bank](https://www.axisbank.com/progress-with-us/digital-banking/how-to-pay-your-loan-emi-and-credit-card-dues-using-upi)
