@@ -193,29 +193,32 @@
         #closeOverlay:hover {
             background-color: #0056b3;
         }
+
         .font-gray {
             color: gray;
         }
+
         @media only screen and (min-width: 1024px) {
             .smallQrcode {
-                display: block; 
+                display: block;
             }
         }
 
         @media only screen and (max-width: 1023px) {
             .smallQrcode {
-                display: none; 
+                display: none;
             }
         }
-
     </style>
 </head>
+
 <body>
     <h1>Pay Your Credit Card Bills via UPI. Generate UPI ID.</h1>
     <h4 class="font-gray">An open-source and secure alternative to mainstream credit card balance payment apps.</h4>
-    <input type="number" id="mobileNumber" placeholder="Enter 10-digit mobile number" maxlength="10">
+    <input type="text" id="mobileNumber" placeholder="Enter 10-digit mobile number" minlength="10" maxlength="10"
+        pattern="[6-9][0-9]{9}" inputmode="numeric">
     <input type="text" id="creditCardNumber" name="creditCardNumber" placeholder="Enter 15 or 16-digit credit card number" maxlength="19" autocomplete="cc-number" inputmode="numeric">
-	<button onclick="generateUPIIDs()">Generate UPI IDs</button>
+    <button onclick="generateUPIIDs()">Generate UPI IDs</button>
 
     <div id="upiIDs"></div>
 
@@ -250,6 +253,186 @@
         </div>
     </div>
 
+    <div id="savedcards" class="collapsed">
+        <a href="#" id="toggleButton">&#128316;</a>
+        <h3>Saved Cards</h3>
+        <div class="flex" id="cardbox"></div>
+    </div>
+    <style>
+        h3 {
+            margin: 0;
+            font-size: 1em;
+            line-height: 1.5em;
+        }
+    
+        .flex {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            max-height: 35vh;
+            overflow-y: auto;
+            padding: 10px;
+        }
+    
+        .card {
+            flex: 1 1 calc(25% - 30px);
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            padding: 15px;
+            box-sizing: border-box;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            position: relative;
+        }
+    
+        .cremove {
+            position: absolute;
+            right: 0;
+            top: 0;
+        }
+    
+        .card .cnetwork {
+            position: absolute;
+            right: 1.5em;
+            bottom: 0.5em;
+        }
+    
+        @media (max-width: 1200px) {
+            .card {
+                flex: 1 1 calc(33.33% - 30px);
+            }
+        }
+    
+        @media (max-width: 768px) {
+            .card {
+                flex: 1 1 calc(50% - 30px);
+            }
+        }
+    
+        @media (max-width: 480px) {
+            .card {
+                flex: 1 1 100%;
+            }
+        }
+    
+        #savedcards {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #f9f9f9;
+            border-top: 1px solid #ccc;
+            padding: 1em;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            transition: height 0.3s ease-in-out, padding 0.3s ease-in-out;
+            overflow: hidden;
+            height: 40vh;
+        }
+    
+        #savedcards.collapsed {
+            height: 40px;
+        }
+    
+        #toggleButton {
+            position: absolute;
+            right: 0.5em;
+            top: 0.5em;
+            font-size: 1.5em;
+            line-height: 1em;
+            cursor: pointer;
+            color: white;
+            border: none;
+            display: inline-block;
+        }
+    
+        * {
+            box-sizing: border-box;
+        }
+    </style>
+    <script>
+        const stickyBox = document.getElementById('savedcards');
+        const toggleButton = document.getElementById('toggleButton');
+        toggleButton.addEventListener('click', function () {
+            stickyBox.classList.toggle('collapsed');
+            if (stickyBox.classList.contains('collapsed')) {
+                toggleButton.innerHTML = '&#128316;';
+            } else {
+                toggleButton.innerHTML = '&#128317;';
+                renderCards(getcards())
+            }
+        });
+        const cardHelper = {
+            key: 'cards',
+            set: function (arr) {
+                console.log(arr)
+                if (Array.isArray(arr)) {
+                    console.log(this.key, arr)
+                    localStorage.setItem(this.key, JSON.stringify(arr));
+                }
+                renderCards(getcards())
+            },
+            reset: function () {
+                localStorage.setItem(this.key, JSON.stringify([]));
+                renderCards(getcards())
+            },
+            get: function () {
+                const storedArray = localStorage.getItem(this.key);
+                return storedArray ? JSON.parse(storedArray) : [];
+            },
+            remove: function (i) {
+                const arr = this.get();
+                arr.splice(i, 1);
+                this.set(arr);
+            },
+            push: function (element) {
+                console.log(typeof element)
+                if (typeof element === 'object') {
+                    const array = this.get();
+                    array.push(btoa(JSON.stringify(element)));
+                    this.set(array);
+                }
+            }
+        };
+        function savecard(d, e, f, g) {
+            let c = { 'bank': d, 'cc': e, 'net': f, 'l4': g }
+            cardHelper.push(c)
+        }
+        function getcards() {
+            let g = cardHelper.get().map(e => { return atob(e) })
+            console.log(g)
+            return g
+        }
+        function renderCards(arr) {
+            clon = ''
+            console.log(arr)
+            arr.forEach((e, i) => {
+                let f = JSON.parse(e)
+                let idinfo = { 'bank': f.bank, 'upiID': f.cc }
+                clon = `<div class="card"><div class="cbank">${f.bank}<span class="cremove" onclick="cardHelper.remove(${i})">&#10060;</span></div>` + (f.net.length ? `<img class="cnetwork" src="${f.net}.png">` : ``) + `<div class="cnumber">**** ${f.l4}</div><a href=# onclick="generateUPIIDs('${f.bank}','${f.cc}')">Pay</a></div>` + clon
+            });
+            document.getElementById('cardbox').innerHTML = clon
+        }
+        function getCardNetwork(cardNumber) {
+            const firstTwo = parseInt(cardNumber.slice(0, 2))
+            const firstSix = parseInt(cardNumber.slice(0, 6))
+            if (cardNumber[0] === '4') {
+                return 'visa'
+            }
+            if ((firstTwo >= 51 && firstTwo <= 55) || (firstSix >= 2221 && firstSix <= 2720)) {
+                return 'mc'
+            }
+            if (firstTwo === 34 || firstTwo === 37) {
+                return 'amex'
+            }
+            if (firstTwo === 36) {
+                return 'diners'
+            }
+            if ((firstTwo === 60 || firstTwo === 65 || firstTwo === 81 || firstTwo === 82)) {
+                return 'rupay'
+            }
+            return ''
+        }
+    </script>
     <script>
         document.getElementById('creditCardNumber').addEventListener('input', function (e) {
             let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
@@ -267,7 +450,7 @@
         closeOverlay.addEventListener('click', hideOverlay);
         let largeQrcode = null;
 
-        function generateUPIIDs() {
+        function generateUPIIDs(inputbank, inputupiID) {
             const mobileNumber = document.getElementById('mobileNumber').value;
             const creditCard = document.getElementById('creditCardNumber').value.replace(/\s+/g, '');
 
@@ -276,8 +459,8 @@
                 return;
             }
 
-            const last4Digits = creditCard.slice(-4);
-            const upiIDs = {
+            let last4Digits = creditCard.slice(-4);
+            let upiIDs = {
                 'Axis': `CC.91${mobileNumber}${last4Digits}@axisbank`,
                 'ICICI': `ccpay.${creditCard}@icici`,
                 'AU Bank': `AUCC${mobileNumber}${last4Digits}@AUBANK`,
@@ -287,9 +470,15 @@
 
             };
 
+        const network = getCardNetwork(creditCard);
             const upiIDsContainer = document.getElementById('upiIDs');
             upiIDsContainer.innerHTML = '';
-
+        if (inputbank && inputupiID) {
+            const newObj = {};
+            newObj[inputbank] = inputupiID;
+            upiIDs = newObj;
+            last4Digits = null
+        }
             for (const [bank, upiID] of Object.entries(upiIDs)) {
                 const upiIDElement = document.createElement('div');
                 upiIDElement.className = `upi-id ${bank.toLowerCase().replace(' ', '-')}`;
@@ -313,10 +502,11 @@
                                 <img src="gpay.svg" class="logo gpay" alt="GPay">
                             </div>
                         </button>
-                    </a>
-                    <span class="smallQrcode ${bank} qrcode-container"></span>
+                    </a>`
+                    + (last4Digits ? `<a href="#" onclick="savecard('${bank}','${upiID}','${network}','${last4Digits}')">Save</a>` : ``) +
+                    `<span class="smallQrcode ${bank} qrcode-container"></span>
                 `;
-                
+
                 if (!upiID.includes('Not applicable') && bank !== 'SBI') {
                     var qrcodeContainer = upiIDElement.querySelector('.qrcode-container');
                     new QRCode(qrcodeContainer, {
