@@ -212,7 +212,6 @@
     <h1>Pay Your Credit Card Bills via UPI. Generate UPI ID.</h1>
     <input type="number" id="mobileNumber" placeholder="Enter 10-digit mobile number" maxlength="10">
     <input type="text" id="creditCardNumber" name="creditCardNumber" placeholder="Enter 15 or 16-digit credit card number" maxlength="19" autocomplete="cc-number" inputmode="numeric">
-    <input type="number" id="amount" placeholder="Enter amount (optional)">
 	<button onclick="generateUPIIDs()">Generate UPI IDs</button>
 
     <div id="upiIDs"></div>
@@ -268,7 +267,6 @@
         function generateUPIIDs() {
             const mobileNumber = document.getElementById('mobileNumber').value;
             const creditCard = document.getElementById('creditCardNumber').value.replace(/\s+/g, '');
-			const amountValue = document.getElementById('amount').value;
 
             if (mobileNumber.length !== 10 || (creditCard.length !== 16 && creditCard.length !== 15)) {
                 alert('Please enter a valid 10-digit mobile number and 15 or 16-digit credit card number.');
@@ -300,14 +298,8 @@
                     buttonDisabled = 'disabled';
                 }
 				
-				let upiString = `upi://pay?pa=${encodeURIComponent(upiID)}&pn=${encodeURIComponent(bank)}`;
-				
-				if (amountValue) {
-                    upiString += `&am=${encodeURIComponent(amountValue)}`;
-                }
-
-                upiString += `&cu=INR`;
-				
+				let upiString = `upi://pay?pa=${encodeURIComponent(upiID)}&pn=${encodeURIComponent(bank)}&cu=INR`;
+								
                 upiIDElement.innerHTML = `
                     <span class="${strikethrough}"><strong>${bank}:</strong> ${upiID}</span>
                     <button class="copy-btn" ${buttonDisabled} onclick="copyToClipboard(this, '${upiID}')" ${upiID.includes('Not applicable') ? 'disabled' : ''}>Copy</button>
