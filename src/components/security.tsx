@@ -13,7 +13,7 @@ export default function Security() {
 				<li className="list-item items-center text-black dark:text-gray-300">
 					<span>Source code is publicly available on</span>
 					<a
-						href="https://github.com"
+						href="https://github.com/RedeemApp/cc-billpay-upi-id"
 						className="text-purple-600 inline-flex dark:text-purple-300 hover:underline items-center ml-1 "
 					>
 						<Github className="w-4 h-4 mr-1" />

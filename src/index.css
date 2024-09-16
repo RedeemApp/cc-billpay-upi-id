@@ -13,4 +13,19 @@
 	input[type="number"] {
 		@apply appearance-none;
 	}
+
 }
+
+@layer components {
+    @media (max-width: 768px) {
+        .small-qr {
+          display: none;
+        }
+      }
+
+      @media (min-width: 769px) {
+        .small-qr {
+          display: flex;
+        }
+      }
+  }

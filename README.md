@@ -1,50 +1,50 @@
-# React + TypeScript + Vite
+# UPI ID Generator for Credit Card Bills
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Access the Live Tool
+It is hosted on GitHub Pages [here](https://redeemapp.github.io/cc-billpay-upi-id/).
 
-Currently, two official plugins are available:
+## Overview
+Did you know you can pay credit card bills via UPI id?
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Yes, almost all the banks have provided a way to do that. 
 
-## Expanding the ESLint configuration
+## Features
+You can use the tool to take a quick look at the format.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+OR 
 
-- Configure the top-level `parserOptions` property like this:
+You can use the tool to generate the upi id.
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+## Security
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+* No data including cc number leaves your system.
+* Source code is publicly available on GitHub.
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+## Demo
+![Demo Image](qr-demo.png)
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+## Installation
+
+## Usage
+
+* Just enter your mobile number (auto-complete is enabled)
+
+* Enter the card number (auto-complete is enabled)
+
+
+## Contribution
+
+To contribute to this project, please familiarize yourself with the upi id formats for various banks:
+- [American Express (Amex)](https://www.americanexpress.com/in/customer-service/payments-statements-and-balance/making-a-payment.html)
+- [ICICI Bank](https://www.icicibank.com/blogs/credit-card/credit-card-payment-procedure)
+- [Axis Bank](https://www.axisbank.com/progress-with-us/digital-banking/how-to-pay-your-loan-emi-and-credit-card-dues-using-upi)
+- [IDFC Bank](https://www.idfcfirstbank.com/finfirst-blogs/credit-card/ways-to-make-credit-card-bill-payment)
+- [AU Bank](https://www.aubank.in/commercial-credit-cards-bill-payment)
+
+## License
+
+This project is under the MIT License
+
+
+## Conclusion
+Enjoy simpler payment methods with our UPI ID generator for credit card bills.

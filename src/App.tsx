@@ -12,6 +12,8 @@ import gpayLogoDark from "./assets/gpayLogoDark.svg";
 import Security from "./components/security";
 import Caution from "./components/caution";
 import UpiFormats from "./components/upiFormats";
+import QRCode from "react-qr-code";
+
 
 export default function UPIIDGenerator() {
 	const [isDarkMode, setIsDarkMode] = useState(false);
@@ -24,6 +26,22 @@ export default function UPIIDGenerator() {
 	>([]);
 	const [tableVisible, setTableVisible] = useState(false);
 	const [copiedUPIId, setCopiedUPIId] = useState<string | null>(null);
+    // Create local state for overlay
+    const [showOverlay, setShowOverlay] = useState(false);
+    const [overlayProps, setOverlayProps] = useState({upiString: '', bank: '', upiId: ''});
+
+
+    // Add this method inside your component
+    function openOverlay(bank: string, upiId: string) {
+        const upiString = `upi://pay?pa=${upiId}&pn=${bank}&cu=INR`
+        setOverlayProps({upiString, bank, upiId});
+        setShowOverlay(true);
+    }
+
+    // Add this method inside your component
+    function closeOverlay() {
+        setShowOverlay(false);
+    }
 
 	useEffect(() => {
 		const savedTheme = localStorage.getItem("theme");
@@ -150,7 +168,7 @@ export default function UPIIDGenerator() {
 			<div className="container relative sm:mt-0 max-w-4xl bg-white dark:bg-gray-800 dark:text-gray-100 p-8 rounded-lg overflow-auto">
 				<div className="flex justify-between items-center mb-6">
 					<div className="heading text-2xl font-bold text-purple-800 dark:text-purple-300">
-						Pay Your Credit Card Bills via UPI
+						Pay Your Credit Card Balance via official UPI ID
 					</div>
 					<button
 						onClick={toggleDarkMode}
@@ -164,8 +182,7 @@ export default function UPIIDGenerator() {
 					</button>
 				</div>
 				<div className="sub-heading text-xl text-purple-600 dark:text-purple-300 mb-6">
-					Did you know you can pay credit card bills via UPI id? Yes, almost all
-					the banks have provided a way to do that.
+                An open-source and secure alternative to mainstream credit card balance payment apps.
 				</div>
 
 				<Security />
@@ -222,11 +239,15 @@ export default function UPIIDGenerator() {
 									<th className="border-b-2 border-gray-400 dark:border-gray-700 p-4 text-left">
 										UPI ID
 									</th>
+                                    <th className="border-b-2 border-gray-400 dark:border-gray-700 p-4 text-left hidden md:table-cell">
+                                        QR code
+                                    </th>
 								</tr>
 							</thead>
-							<tbody>
 								{generatedUPIIds.map(
-									({ bank, upiId, strikethrough, disabled }) => (
+									({ bank, upiId, strikethrough, disabled }: { bank: string; upiId: string; strikethrough: boolean; disabled: boolean }) => {
+                                         const upiString = `upi://pay?pa=${upiId}&pn=${bank}&cu=INR`
+                                        return (
 										<tr key={bank}>
 											<td className="border-b border-gray-400 dark:border-gray-700 p-4">
 												{bank}
@@ -237,8 +258,7 @@ export default function UPIIDGenerator() {
 														className={`mb-2 mr-2 sm:mb-0 ${
 															strikethrough ? "line-through" : ""
 														}`}
-													>
-														{upiId}
+													> {upiId}
 													</div>
 													{/* Buttons - Flex container with wrap */}
 													<div className="flex flex-wrap gap-2">
@@ -264,21 +284,53 @@ export default function UPIIDGenerator() {
 																	alt="GPay Logo"
 																/>
 															</a>
+
 														</button>
+
 													</div>
 												</div>
 											</td>
+                                            <div className="hidden md:table-cell">
+                                                        <td className="border-b border-gray-400 dark:border-gray-700 p-4">
+                                                        <button onClick={() => openOverlay(upiId, bank)}>
+                                                            <QRCode value={upiString} size={50} />
+                                                        </button>
+                                                        </td>
+                                                    </div>
 										</tr>
-									)
-								)}
-							</tbody>
-						</table>
+									);
+                                })}
+                        </table>
 					)}
 				</div>
+
+                <div>
+                    {showOverlay && (
+                        <div id="overlay" className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 bg-[rgb(185,185,185,0.97)] p-8 rounded-lg">
+                            <div className="space-y-4">
+                                <p className="text-center">{`${overlayProps.bank} / ${overlayProps.upiId}`}</p>
+                                <QRCode value={overlayProps.upiString} size={300} />
+                            </div>
+
+                            <div className="flex justify-center mt-4">
+                                <button
+                                    className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+                                    onClick={closeOverlay}
+                                >
+                                    Close
+                                </button>
+                            </div>
+
+                        </div>
+                    )}
+                </div>
+
+
 
 				<Caution />
 
 				<UpiFormats />
+
 			</div>
 		</main>
 	);
