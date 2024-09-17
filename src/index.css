@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+	/* Hide arrows in input of type number */
+	input[type="number"]::-webkit-outer-spin-button,
+	input[type="number"]::-webkit-inner-spin-button {
+		@apply appearance-none;
+		margin: 0;
+	}
+
+	input[type="number"] {
+		@apply appearance-none;
+	}
+
+}
+
+@layer components {
+    @media (max-width: 768px) {
+        .small-qr {
+          display: none;
+        }
+      }
+
+      @media (min-width: 769px) {
+        .small-qr {
+          display: flex;
+        }
+      }
+  }
