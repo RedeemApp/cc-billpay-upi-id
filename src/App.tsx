@@ -14,7 +14,6 @@ import Caution from "./components/caution";
 import UpiFormats from "./components/upiFormats";
 import QRCode from "react-qr-code";
 
-
 export default function UPIIDGenerator() {
 	const [isDarkMode, setIsDarkMode] = useState(false);
 	const [phoneNumber, setPhoneNumber] = useState("");
@@ -167,8 +166,11 @@ export default function UPIIDGenerator() {
 		<main className="min-h-screen bg-gradient-to-br from-purple-100 to-indigo-200 dark:bg-gradient-to-br dark:from-purple-900 dark:to-indigo-900 flex items-center justify-center py-10">
 			<div className="container relative sm:mt-0 max-w-4xl bg-white dark:bg-gray-800 dark:text-gray-100 p-8 rounded-lg overflow-auto">
 				<div className="flex justify-between items-center mb-6">
-					<div className="heading text-2xl font-bold text-purple-800 dark:text-purple-300">
+					<div className="flex items-center">
+                    <img className="mr-2 w-8 h-8 sm:w-12 sm:h-12" src="upi.svg" alt="UPI logo" />
+					<div className="heading  sm:text-2xl font-bold text-purple-800 dark:text-purple-300">
 						Pay Your Credit Card Balance via official UPI ID
+					</div>
 					</div>
 					<button
 						onClick={toggleDarkMode}
@@ -181,7 +183,7 @@ export default function UPIIDGenerator() {
 						)}
 					</button>
 				</div>
-				<div className="sub-heading text-xl text-purple-600 dark:text-purple-300 mb-6">
+				<div className="sub-heading sm:text-xl text-purple-600 dark:text-purple-300 mb-6">
                 An open-source and secure alternative to mainstream credit card balance payment apps.
 				</div>
 
@@ -195,6 +197,7 @@ export default function UPIIDGenerator() {
 							maxLength={10}
 							value={phoneNumber}
 							placeholder="Enter Phone Number"
+							autoComplete="tel"
 							onChange={(e) => validatePhoneNumber(e.target.value)}
 							className="flex-grow w-4 px-3 py-2 border rounded-md dark:bg-gray-700 dark:text-gray-100 dark:border-gray-600 dark:focus:border-purple-400 dark:focus:ring-purple-400 bg-white text-black border-gray-300 focus:border-purple-500 focus:ring-purple-500 focus:outline-none focus:ring-1"
 						/>
@@ -209,6 +212,8 @@ export default function UPIIDGenerator() {
 							maxLength={19}
 							value={cardNumber}
 							placeholder="Enter Credit Card Number"
+                            inputMode="numeric"
+                            autoComplete="cc-number"
 							onChange={(e) => validateCardNumber(e.target.value)}
 							className="flex-grow w-4 px-3 py-2 border rounded-md dark:bg-gray-700 dark:text-gray-100 dark:border-gray-600 dark:focus:border-purple-400 dark:focus:ring-purple-400 bg-white text-black border-gray-300 focus:border-purple-500 focus:ring-purple-500 focus:outline-none focus:ring-1"
 						/>
