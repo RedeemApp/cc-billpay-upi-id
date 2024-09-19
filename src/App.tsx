@@ -20,6 +20,7 @@ export default function UPIIDGenerator() {
 	const [cardNumber, setCardNumber] = useState("");
 	const [phoneError, setPhoneError] = useState(false);
 	const [cardError, setCardError] = useState(false);
+	const [cardType, setCardType] = useState<string | null>(null); 
 	const [generatedUPIIds, setGeneratedUPIIds] = useState<
 		{ bank: string; upiId: string; strikethrough: boolean; disabled: boolean }[]
 	>([]);
@@ -110,8 +111,37 @@ export default function UPIIDGenerator() {
 			console.log("false");
 		}
 
+		const network = getCardNetwork(value);
+		if(network!=null) {
+			setCardType(network);
+		}
+		else {
+			setCardType(null);
+			setCardError(true);
+		}
 		setCardError(!isLuhnValid || !isLengthValid);
 	};
+
+	function getCardNetwork(cardNumber: string): string | null {
+		const firstTwo = parseInt(cardNumber.slice(0, 2), 10);
+		const firstSix = parseInt(cardNumber.slice(0, 6), 10);
+		if (cardNumber[0] === '4') {
+			return 'visa';
+		}
+		if ((firstTwo >= 51 && firstTwo <= 55) || (firstSix >= 2221 && firstSix <= 2720)) {
+			return 'mastercard';
+		}
+		if (firstTwo === 34 || firstTwo === 37) {
+			return 'amex'
+		}
+		if (firstTwo === 36) {
+			return 'diners'
+		}
+		if ((firstTwo === 60 || firstTwo === 65 || firstTwo === 81 || firstTwo === 82)) {
+			return 'rupay'
+		}
+		return null;
+	}
 
 	const generateUPIIds = () => {
 		const last4Digits = cardNumber.slice(-4);
@@ -217,8 +247,16 @@ export default function UPIIDGenerator() {
 							onChange={(e) => validateCardNumber(e.target.value)}
 							className="flex-grow w-4 px-3 py-2 border rounded-md dark:bg-gray-700 dark:text-gray-100 dark:border-gray-600 dark:focus:border-purple-400 dark:focus:ring-purple-400 bg-white text-black border-gray-300 focus:border-purple-500 focus:ring-purple-500 focus:outline-none focus:ring-1"
 						/>
-						{cardError && (
-							<CircleAlert className="absolute right-3 top-1/2 transform -translate-y-1/2 text-red-500 w-6 h-6" />
+						{cardError ? (
+								<CircleAlert className="absolute right-3 top-1/2 transform -translate-y-1/2 text-red-500 w-6 h-6" />
+							) : (
+								cardType && (
+								<img
+									src={`src/assets/${cardType}.png`} // Use the cardType to display the appropriate logo
+									alt={`${cardType} logo`}
+									className="absolute right-3 top-1/2 transform -translate-y-1/2 w-8 h-8"
+							/>
+							)
 						)}
 					</div>
 				</div>
